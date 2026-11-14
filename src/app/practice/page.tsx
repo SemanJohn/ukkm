@@ -82,10 +82,6 @@ export default function PracticePage() {
   return (
     <Shell title="Mod Latihan">
       <div className="space-y-5">
-        <p className="text-sm text-slate-600">
-          Calon: <strong>{candidate}</strong>. Kecuali Mod Ulang Kaji, semua mod hanya menggunakan soalan yang belum pernah dipaparkan kepada calon ini.
-        </p>
-
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" role="radiogroup" aria-label="Jenis latihan">
           {KINDS.map((k) => (
             <label key={k} className={`card cursor-pointer !p-4 ${kind === k ? 'border-blue-700 ring-2 ring-blue-700' : ''}`} data-testid={`kind-${k}`}>
@@ -136,18 +132,18 @@ export default function PracticePage() {
                   </>
                 ) : (
                   <>
-                    Soalan baharu tersedia: <strong>{pool.length}</strong> ({families} keluarga soalan) — setiap sesi mengambil paling banyak satu soalan daripada setiap keluarga.
+                    Soalan baharu tersedia: <strong>{families}</strong>
                   </>
                 )}
               </p>
               {available < count && available > 0 && (
                 <p className="mt-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-900" role="alert">
-                  Hanya {available} soalan tersedia; sesi akan mengandungi {available} soalan. Tiada soalan diulang secara senyap.
+                  Hanya {available} soalan tersedia; sesi akan mengandungi {available} soalan.
                 </p>
               )}
               {available === 0 && (
                 <p className="mt-2 rounded-lg bg-red-50 p-3 text-sm text-red-800" role="alert">
-                  {kind === 'revision' ? 'Tiada soalan salah untuk diulang kaji bagi subjek ini.' : 'Tiada soalan baharu untuk pilihan ini. Tambah soalan di Admin → Bank soalan.'}
+                  {kind === 'revision' ? 'Tiada soalan salah untuk diulang kaji bagi subjek ini.' : 'Tiada soalan baharu untuk pilihan ini.'}
                 </p>
               )}
               {error && (

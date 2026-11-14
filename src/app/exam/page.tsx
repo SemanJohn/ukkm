@@ -4,9 +4,7 @@ import { u } from '@/lib/base';
 import { useEffect, useState } from 'react';
 import ExamRunner from '@/components/ExamRunner';
 import Shell from '@/components/Shell';
-import StatusBadge from '@/components/StatusBadge';
 import type { BankBundle } from '@/data/bank';
-import { presetLabel } from '@/lib/config';
 import { getActiveSession, getCandidateName, getSeen, loadBank, loadConfig, saveSession, setCandidateName, startExam } from '@/lib/db';
 import { capacity, tick, type Capacity } from '@/lib/engine';
 import { syncNow } from '@/lib/sync';
@@ -96,7 +94,6 @@ export default function ExamPage() {
 
   const { cfg, bundle } = phase;
   const runnable = cfg.sections.filter((s) => s.enabled && s.questionCount);
-  const disabled = cfg.sections.filter((s) => !s.enabled);
   const totalQ = runnable.reduce((a, s) => a + (s.questionCount ?? 0), 0);
   const totalMin = runnable.reduce((a, s) => a + (s.durationMinutes ?? 0), 0);
   const short = cap?.sections.filter((c) => c.unseenFamilies < c.need) ?? [];
@@ -122,104 +119,67 @@ export default function ExamPage() {
   return (
     <Shell title={cfg.name}>
       <div className="space-y-5">
-        <section className="card border-amber-300 bg-amber-50">
-          <p className="text-sm text-amber-900">
-            <strong>{presetLabel(cfg.formatStatus)}.</strong> {cfg.description}{' '}
-            {cfg.formatStatus !== 'OFFICIAL_2027_VERIFIED' && 'Bilangan soalan, tempoh masa dan peraturan di bawah bukan spesifikasi rasmi MARA. '}
-            Rujuk{' '}
-            <a href={u('/format/')} className="font-semibold underline">
-              Format &amp; Bukti
-            </a>
-            .
-          </p>
-        </section>
-
         <section className="card">
-          <h2 className="mb-3 text-lg font-bold">Struktur sesi</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr>
-                  {['#', 'Komponen', 'Soalan', 'Masa (min)', 'Dimarkah', 'Status format', 'Soalan baharu tersedia'].map((h) => (
-                    <th key={h} className="th">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {runnable.map((s, i) => (
-                  <tr key={s.id}>
-                    <td className="td">{i + 1}</td>
-                    <td className="td font-medium">{s.title}</td>
-                    <td className="td">{s.questionCount}</td>
-                    <td className="td">{s.durationMinutes ?? 'Tiada had'}</td>
-                    <td className="td">{s.scored ? 'Ya' : 'Tidak'}</td>
-                    <td className="td">
-                      <StatusBadge status={s.verificationStatus} />
-                    </td>
-                    <td className="td" data-testid={`unseen-${i}`}>
-                      {cap ? cap.sections[i]?.unseen ?? '—' : '…'}
-                    </td>
-                  </tr>
+          <table className="w-full border-collapse">
+            <thead>
+              <tr>
+                {['Komponen', 'Soalan', 'Minit'].map((h) => (
+                  <th key={h} className="th">
+                    {h}
+                  </th>
                 ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-3 text-sm text-slate-600">
-            Jumlah: <strong>{totalQ} soalan</strong>, <strong>{totalMin} minit</strong>.
-            {disabled.length > 0 && <> Tidak diaktifkan: {disabled.map((s) => s.title).join(', ')} (boleh diaktifkan di Admin).</>}
-          </p>
-          <p className="mt-2 text-sm" data-testid="capacity">
-            {cfg.noRepeat === 'off' ? (
-              'Mod tanpa pengulangan dimatikan untuk blueprint ini: soalan boleh berulang.'
-            ) : cap ? (
-              <>
-                Tanpa pengulangan ({cfg.noRepeat === 'family' ? 'ketat — mengikut keluarga soalan' : 'mengikut soalan'}): cukup untuk <strong>{cap.sessionsLeft}</strong> sesi penuh baharu bagi calon ini.
-              </>
-            ) : (
-              'Mengira baki soalan…'
-            )}
-          </p>
+              </tr>
+            </thead>
+            <tbody>
+              {runnable.map((s) => (
+                <tr key={s.id}>
+                  <td className="td font-medium">{s.title}</td>
+                  <td className="td">{s.questionCount}</td>
+                  <td className="td">{s.durationMinutes ?? '—'}</td>
+                </tr>
+              ))}
+              <tr>
+                <td className="td font-bold">Jumlah</td>
+                <td className="td font-bold">{totalQ}</td>
+                <td className="td font-bold">{totalMin}</td>
+              </tr>
+            </tbody>
+          </table>
           {short.length > 0 && !empty && (
-            <p className="mt-2 rounded-lg bg-red-50 p-3 text-sm text-red-800" role="alert">
-              Soalan baharu tidak mencukupi bagi: {short.map((c) => `${c.title} (${c.unseenFamilies} daripada ${c.need})`).join('; ')}. Sesi akan dipendekkan mengikut baki yang ada — soalan <strong>tidak</strong> akan diulang. Tambah soalan di Admin → Bank soalan, atau gunakan Mod Ulang Kaji.
+            <p className="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-800" role="alert">
+              Soalan baharu tidak mencukupi bagi: {short.map((c) => `${c.title} (${c.unseenFamilies} daripada ${c.need})`).join('; ')}. Sesi akan dipendekkan; soalan tidak diulang.
             </p>
           )}
           {empty && (
-            <p className="mt-2 rounded-lg bg-red-50 p-3 text-sm text-red-800" role="alert">
-              Semua soalan untuk blueprint ini telah dipaparkan kepada calon ini. Tambah soalan di Admin → Bank soalan, atau gunakan Mod Ulang Kaji.
+            <p className="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-800" role="alert">
+              Semua soalan untuk ujian ini telah digunakan. Gunakan Mod Ulang Kaji.
             </p>
           )}
+          <ul className="mt-4 list-disc space-y-1 pl-5 text-sm text-slate-700">
+            <li>Pemasa setiap komponen berjalan terus dan tidak berhenti. Apabila masa tamat, komponen seterusnya bermula sendiri.</li>
+            <li>{cfg.allowBackNavigation === false ? 'Tidak boleh kembali ke soalan sebelumnya.' : 'Boleh berpindah antara soalan dalam komponen yang sama sahaja.'}</li>
+            <li>{cfg.allowCalculator ? 'Kalkulator pada skrin disediakan.' : 'Tiada kalkulator; sediakan kertas dan pensel.'}</li>
+          </ul>
+          <p className="mt-3 text-xs text-slate-500">
+            Latihan tidak rasmi; bukan format rasmi MARA.{' '}
+            <a href={u('/format/')} className="underline">
+              Butiran
+            </a>
+          </p>
         </section>
 
         <section className="card">
-          <h2 className="mb-3 text-lg font-bold">Arahan</h2>
-          <ol className="list-decimal space-y-1.5 pl-5 text-sm leading-relaxed">
-            <li>Setiap komponen mempunyai pemasa sendiri. Pemasa berjalan mengikut masa sebenar dan tidak berhenti jika halaman ditutup atau dimuat semula.</li>
-            <li>Apabila masa komponen tamat, komponen seterusnya bermula secara automatik. Apabila masa komponen terakhir tamat, jawapan dihantar secara automatik.</li>
-            <li>Setiap soalan mempunyai empat pilihan (A, B, C, D). Pilih satu jawapan sahaja. Jawapan disimpan secara automatik.</li>
-            <li>
-              {cfg.allowBackNavigation === false ? 'Anda TIDAK boleh kembali ke soalan sebelumnya.' : 'Anda boleh bergerak antara soalan dalam komponen yang sama dan menandakan soalan untuk semakan.'} Komponen yang telah ditamatkan tidak boleh dibuka semula.
-            </li>
-            <li>{cfg.allowCalculator ? 'Kalkulator pada skrin disediakan.' : 'Kalkulator tidak disediakan. Sediakan kertas dan pensel untuk jalan kira.'}</li>
-            <li>Tiada jawapan atau petunjuk dipaparkan semasa sesi. Penjelasan dipaparkan selepas penghantaran.</li>
-          </ol>
-        </section>
-
-        <section className="card">
-          <h2 className="mb-3 text-lg font-bold">Pengesahan calon</h2>
           <label className="block text-sm font-medium" htmlFor="cand-name">
             Nama calon
           </label>
           <input id="cand-name" className="input mt-1 max-w-md" value={name} onChange={(e) => setName(e.target.value)} maxLength={80} autoComplete="off" />
           <label className="mt-4 flex items-start gap-3 text-sm">
             <input type="checkbox" className="mt-0.5 h-5 w-5" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} data-testid="confirm-candidate" />
-            <span>Saya mengesahkan nama di atas betul, saya telah membaca arahan, dan saya faham ini ialah simulasi latihan tidak rasmi.</span>
+            <span>Nama betul dan saya sedia bermula.</span>
           </label>
           <label className="mt-3 flex items-start gap-3 text-sm">
             <input type="checkbox" className="mt-0.5 h-5 w-5" checked={fullscreen} onChange={(e) => setFullscreen(e.target.checked)} />
-            <span>Mulakan dalam mod skrin penuh (pilihan).</span>
+            <span>Skrin penuh</span>
           </label>
           <div className="mt-5 flex flex-wrap gap-3">
             <button type="button" className="btn btn-primary" disabled={!confirmed || !name.trim() || starting || totalQ === 0 || empty || cap === null} onClick={start} data-testid="start-exam">

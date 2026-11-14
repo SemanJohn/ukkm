@@ -31,7 +31,7 @@ export default function Shell({ title, children }: { title: string; children: Re
         {children}
       </main>
       <footer className="mx-auto max-w-5xl px-4 pb-8 text-xs text-slate-500">
-        Aplikasi latihan persendirian. Bukan sistem rasmi MARA atau KPM, tidak menggunakan soalan rasmi, dan markah simulasi bukan skor merit kemasukan.
+        Bukan sistem rasmi MARA atau KPM. Markah simulasi bukan skor merit kemasukan.
       </footer>
     </div>
   );

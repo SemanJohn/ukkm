@@ -1,4 +1,3 @@
-import { u } from '@/lib/base';
 import Shell from '@/components/Shell';
 import StatusBadge from '@/components/StatusBadge';
 import { EVIDENCE, REVIEW_DATE, SRC } from '@/lib/config';
@@ -9,15 +8,7 @@ export default function FormatPage() {
       <div className="space-y-6">
         <section className="card text-sm leading-relaxed">
           <p>
-            Tarikh semakan: <strong>{REVIEW_DATE}</strong>. Hanya dapatan berstatus <strong>OFFICIAL_2027_VERIFIED</strong> boleh dianggap format rasmi 2027. Tiada dokumen rasmi yang dicapai menyatakan komponen, bilangan soalan atau tempoh UKKM bagi{' '}
-            <strong>calon sekolah KPM selepas PKSK</strong>, mahupun format Ujian Khas Premier STEM-Excellence — maka semua blueprint aplikasi berstatus <strong>UNVERIFIED_PRACTICE</strong>.
-          </p>
-          <p className="mt-2">
-            Format calon sekolah swasta tidak berdaftar KPM <strong>tidak</strong> digunakan sebagai format calon KPM. Versi penuh: <code>docs/FORMAT-UKKM-2027.md</code>. Jika surat panggilan atau makluman rasmi menyatakan butiran, kemas kini blueprint dan statusnya di{' '}
-            <a className="underline" href={u('/admin/')}>
-              Admin
-            </a>
-            .
+            Tiada dokumen rasmi MARA menyatakan format UKKM bagi calon sekolah KPM selepas PKSK atau format Ujian Khas STEM-Excellence, jadi semua tetapan ujian di sini ialah latihan sahaja. Disemak {REVIEW_DATE}.
           </p>
         </section>
 

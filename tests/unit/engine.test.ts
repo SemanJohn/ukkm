@@ -50,17 +50,19 @@ describe('blueprint calon KPM selepas PKSK', () => {
     }
   });
 
-  it('Bahasa Melayu dan Keperibadian tidak aktif secara lalai; PKSK tiada', () => {
+  it('Bahasa Melayu tidak aktif; Keperibadian aktif dalam Simulasi Penuh sahaja dan tidak dimarkah; PKSK tiada', () => {
     for (const m of ['ukkm', 'full'] as const) {
       const active = DEFAULT_CONFIGS[m].sections.filter((s) => s.enabled).flatMap((s) => s.bank);
       expect(active).not.toContain('bm');
-      expect(active).not.toContain('keperibadian');
+      expect(active.includes('keperibadian')).toBe(m === 'full');
       expect(active).toContain('matematik');
       expect(active).toContain('sains');
     }
-    const titles = buildSession(DEFAULT_CONFIGS.full, BANK, 'x', 1, T0).sections.map((s) => s.title);
-    expect(titles).toHaveLength(5);
-    expect(titles.join(' ')).not.toMatch(/PKSK|Bahasa Melayu|Keperibadian/);
+    const built = buildSession(DEFAULT_CONFIGS.full, BANK, 'x', 1, T0);
+    const titles = built.sections.map((s) => s.title);
+    expect(titles).toHaveLength(6);
+    expect(titles.join(' ')).not.toMatch(/PKSK|Bahasa Melayu/);
+    expect(built.sections.find((s) => /Keperibadian/.test(s.title))?.scored).toBe(false);
   });
 
   it('komponen yang dinyahaktifkan tidak dimasukkan; mengaktifkannya menambahnya', () => {
@@ -120,6 +122,8 @@ describe('randomisasi terkawal', () => {
   });
 });
 
+const BANK_BY_ID = new Map(BANK.map((q) => [q.id, q]));
+
 describe('enjin tanpa pengulangan', () => {
   it('sesi 1, 2, 3 … tidak berkongsi sebarang soalan', () => {
     let seen = NO_SEEN;
@@ -127,8 +131,11 @@ describe('enjin tanpa pengulangan', () => {
     for (let i = 0; i < 5; i++) {
       const s = start(DEFAULT_CONFIGS.full, 100 + i, seen);
       expect(s.shortfall).toEqual([]);
-      for (const id of ids(s)) expect(all, `sesi ${i + 1} mengulang ${id}`).not.toContain(id);
-      all.push(...ids(s));
+      // Item keperibadian (tidak dimarkah) dikecualikan daripada peraturan tanpa pengulangan.
+      const scoredIds = ids(s).filter((id) => BANK_BY_ID.get(id)?.section !== 'keperibadian');
+      expect(scoredIds.length).toBeLessThan(ids(s).length);
+      for (const id of scoredIds) expect(all, `sesi ${i + 1} mengulang ${id}`).not.toContain(id);
+      all.push(...scoredIds);
       seen = expose(seen, s);
     }
     expect(new Set(all).size).toBe(all.length);

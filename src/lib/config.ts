@@ -63,8 +63,9 @@ export const DEFAULT_CONFIGS: Record<Mode, ExamConfig> = {
   stem: { ...base, id: 'stem', name: 'Ujian Khas Premier STEM-Excellence', description: 'Latihan penaakulan matematik, pemikiran saintifik, analisis data, logik dan pemikiran komputasional.', sections: stemSections },
   full: {
     ...base, id: 'full', name: 'Simulasi Penuh — UKKM + STEM-Excellence',
-    description: 'Komponen UKKM yang diaktifkan diikuti seksyen STEM-Excellence dalam satu sesi. PKSK tidak dimasukkan.',
-    sections: [...ukkmSections.map((s) => ({ ...s, id: 'full-' + s.id })), ...stemSections.map((s) => ({ ...s, id: 'full-' + s.id }))],
+    description: 'Matematik, Sains dan Keperibadian diikuti seksyen STEM-Excellence dalam satu sesi. PKSK tidak dimasukkan.',
+    // Keperibadian diaktifkan dalam Simulasi Penuh sahaja (atas permintaan keluarga; masih tidak disahkan bagi calon KPM).
+    sections: [...ukkmSections.map((s) => ({ ...s, id: 'full-' + s.id, enabled: s.enabled || s.id === 'keperibadian' })), ...stemSections.map((s) => ({ ...s, id: 'full-' + s.id }))],
   },
 };
 

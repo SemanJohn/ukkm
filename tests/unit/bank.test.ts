@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { BANK, BANK_MAP, buildBank, DEFAULT_VARIANTS, MANUAL_BANK } from '@/data/bank';
 import { TEMPLATES } from '@/data/templates';
 import { DEFAULT_CONFIGS, MODES } from '@/lib/config';
-import { eligible, NO_SEEN } from '@/lib/engine';
+import { eligible, NO_SEEN, repeatable } from '@/lib/engine';
 import { findNearDuplicates, vetExternalItem } from '@/lib/factory';
 import { closeTo, contentHash, evalCalc, fingerprint, jaccard, parseNumeric } from '@/lib/text';
 import { QuestionSchema, type Question } from '@/lib/types';
@@ -196,7 +196,7 @@ describe('semakan item luaran / AI (kuarantin)', () => {
 describe('padanan bank dengan blueprint', () => {
   it('setiap komponen aktif mempunyai soalan mencukupi untuk sekurang-kurangnya 5 sesi baharu', () => {
     for (const mode of MODES) {
-      for (const s of DEFAULT_CONFIGS[mode].sections.filter((x) => x.enabled)) {
+      for (const s of DEFAULT_CONFIGS[mode].sections.filter((x) => x.enabled && !repeatable(x))) {
         const pool = eligible(s, BANK, NO_SEEN, 'item');
         expect(pool.length, `${mode}/${s.id}`).toBeGreaterThanOrEqual(5 * (s.questionCount ?? 0));
       }

@@ -54,7 +54,7 @@ Laluan PostgreSQL sebenar (`DATABASE_URL`) dan panggilan AI langsung **tidak diu
 |---|---|
 | UKKM | Matematik 30 soalan/45 min · Sains 30/40 min. Keperibadian dan Bahasa Melayu **tidak aktif** (aktifkan di Admin jika disahkan diperlukan) |
 | Ujian Khas STEM-Excellence | Tiga seksyen × 15 soalan (25/20/20 min) |
-| Simulasi Penuh | Komponen UKKM yang aktif + STEM-Excellence. PKSK tidak dimasukkan |
+| Simulasi Penuh | Matematik, Sains, Keperibadian (30 item/15 min, tidak dimarkah) + STEM-Excellence: 135 soalan, 165 min. PKSK tidak dimasukkan |
 | Latihan Subjek | Matematik, Sains atau STEM |
 | Cabaran KBAT | Aras sukar dan KBAT lanjutan sahaja |
 | Ujian Pantas | 30 saat setiap soalan |
@@ -64,7 +64,7 @@ Laluan PostgreSQL sebenar (`DATABASE_URL`) dan panggilan AI langsung **tidak diu
 
 ## Tanpa pengulangan
 
-Setiap soalan yang dipaparkan direkod bagi setiap calon. Sesi baharu hanya memilih soalan yang belum pernah dipaparkan; mod "ketat" juga mengelak keluarga soalan (templat sama, nombor berbeza) yang pernah digunakan. Jika soalan baharu tidak mencukupi, sesi dipendekkan dan kekurangan dipaparkan — soalan tidak diulang secara senyap. Sejarah hanya dipadam melalui Admin → Analisis calon.
+Setiap soalan yang dipaparkan direkod bagi setiap calon. Sesi baharu hanya memilih soalan yang belum pernah dipaparkan; mod "ketat" juga mengelak keluarga soalan (templat sama, nombor berbeza) yang pernah digunakan. Jika soalan baharu tidak mencukupi, sesi dipendekkan dan kekurangan dipaparkan — soalan tidak diulang secara senyap. Sejarah hanya dipadam melalui Admin → Analisis calon. Pengecualian: item Keperibadian (tiada jawapan betul/salah, tidak dimarkah) boleh berulang, kerana bank hanya ada 30 item.
 
 ## Bank soalan — angka sebenar
 

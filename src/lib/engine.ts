@@ -60,7 +60,11 @@ export const NO_SEEN: Seen = { ids: new Set(), families: new Set() };
 export const usable = (q: Question) => USABLE_STATUSES.includes(q.validationStatus);
 
 /** Soalan yang layak bagi satu seksyen selepas menapis sejarah mengikut mod tanpa pengulangan. */
-export function eligible(sec: Pick<ExamSection, 'bank' | 'topics'>, bank: Question[], seen: Seen, noRepeat: NoRepeat): Question[] {
+/** Item keperibadian tiada jawapan betul/salah dan tidak dimarkah, jadi ia dikecualikan daripada peraturan tanpa pengulangan. */
+export const repeatable = (sec: Pick<ExamSection, 'bank'>): boolean => sec.bank.length > 0 && sec.bank.every((b) => b === 'keperibadian');
+
+export function eligible(sec: Pick<ExamSection, 'bank' | 'topics'>, bank: Question[], seen: Seen, noRepeatIn: NoRepeat): Question[] {
+  const noRepeat: NoRepeat = repeatable(sec) ? 'off' : noRepeatIn;
   return bank.filter(
     (q) =>
       usable(q) &&
@@ -231,12 +235,12 @@ export interface PracticeOpts {
 
 const EVEN: DifficultyMix = { easy: 20, medium: 40, hard: 25, advanced: 15 };
 export const PRACTICE_INFO: Record<PracticeKind, { title: string; desc: string }> = {
-  subject: { title: 'Latihan Subjek', desc: 'Pilih Matematik, Sains atau STEM. Soalan baharu sahaja.' },
-  kbat: { title: 'Cabaran KBAT', desc: 'Soalan aras sukar dan KBAT lanjutan sahaja.' },
-  speed: { title: 'Ujian Pantas', desc: 'Aras mudah dan sederhana dengan masa yang ketat (30 saat setiap soalan).' },
-  revision: { title: 'Mod Ulang Kaji', desc: 'Ulang soalan yang pernah dijawab salah atau tidak dijawab. Satu-satunya mod yang sengaja mengulang soalan.' },
-  unlimited: { title: 'Latihan Baharu Tanpa Had', desc: 'Sesi baharu daripada soalan yang belum pernah dipaparkan, selagi bank mencukupi.' },
-  adaptive: { title: 'Latihan Adaptif', desc: 'Aras soalan naik apabila jawapan betul dan turun apabila salah.' },
+  subject: { title: 'Latihan Subjek', desc: 'Matematik, Sains atau STEM.' },
+  kbat: { title: 'Cabaran KBAT', desc: 'Soalan sukar sahaja.' },
+  speed: { title: 'Ujian Pantas', desc: '30 saat setiap soalan.' },
+  revision: { title: 'Mod Ulang Kaji', desc: 'Ulang soalan yang pernah salah.' },
+  unlimited: { title: 'Latihan Baharu Tanpa Had', desc: 'Soalan baharu daripada subjek pilihan.' },
+  adaptive: { title: 'Latihan Adaptif', desc: 'Aras naik jika betul, turun jika salah.' },
 };
 
 export function buildPractice(o: PracticeOpts, bank: Question[], candidateName: string, seed: number, now: number, seen: Seen): Session {
@@ -320,7 +324,8 @@ export function capacity(cfg: ExamConfig, bank: Question[], seen: Seen): { secti
       // Satu sesi mengambil paling banyak SATU soalan daripada setiap keluarga. Maka k sesi penuh boleh dibina
       // hanya jika Σ min(saiz keluarga, k) ≥ k × bilangan soalan — bukan sekadar jumlah soalan ÷ bilangan soalan.
       let sessionsLeft = 0;
-      if (cfg.noRepeat === 'family') sessionsLeft = Math.floor(fams / per);
+      if (repeatable(s)) sessionsLeft = pool.length >= per ? Number.MAX_SAFE_INTEGER : 0;
+      else if (cfg.noRepeat === 'family') sessionsLeft = Math.floor(fams / per);
       else {
         const sizes = [...counts.values()];
         for (let k = 1; k <= Math.floor(pool.length / per); k++) {
