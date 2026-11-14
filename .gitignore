@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+test-results
+playwright-report
+next-env.d.ts
+*.tsbuildinfo
+.data
+.env*.local
+desktop.ini
+_pgtest.mjs
