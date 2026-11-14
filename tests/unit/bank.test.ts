@@ -12,13 +12,13 @@ const generated = BANK.filter((q) => q.sourceType === 'template-generated');
 const { report } = buildBank();
 
 describe('bank tulisan tangan — struktur', () => {
-  it('500 item mengikut pecahan asal', () => {
-    expect(MANUAL_BANK).toHaveLength(500);
+  it('620 item tulisan tangan mengikut pecahan', () => {
+    expect(MANUAL_BANK).toHaveLength(620);
     expect(manual('matematik')).toHaveLength(120);
     expect(manual('sains')).toHaveLength(120);
     expect(manual('bm')).toHaveLength(80);
     expect(manual('stem')).toHaveLength(150);
-    expect(manual('keperibadian')).toHaveLength(30);
+    expect(manual('keperibadian')).toHaveLength(150);
   });
 
   it('kedudukan jawapan betul tersebar antara A–D', () => {

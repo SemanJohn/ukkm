@@ -3,7 +3,7 @@
 import { u } from '@/lib/base';
 import { useEffect, useState } from 'react';
 import Shell from '@/components/Shell';
-import { DEFAULT_CONFIGS, MODES, TEST_DATE_ISO } from '@/lib/config';
+import { DEFAULT_CONFIGS, MODES } from '@/lib/config';
 import { deleteSession, getCandidateName, getSeen, listSessions, loadBank, loadConfig } from '@/lib/db';
 import { capacity } from '@/lib/engine';
 import { syncNow, type SyncResult } from '@/lib/sync';
@@ -17,7 +17,6 @@ export default function HomePage() {
 
   const [left, setLeft] = useState<Partial<Record<Mode, number>>>({});
   const [bankSize, setBankSize] = useState<number | null>(null);
-  const [daysLeft, setDaysLeft] = useState<number | null>(null);
   const [offlineReady, setOfflineReady] = useState(false);
   const [sync, setSync] = useState<SyncResult | null>(null);
 
@@ -40,9 +39,6 @@ export default function HomePage() {
       setSync(r);
       if (r.ok) refresh().catch(() => {});
     });
-    const today = new Date();
-    const test = new Date(`${TEST_DATE_ISO}T00:00:00`);
-    setDaysLeft(Math.ceil((test.getTime() - new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) / 86400000));
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistration().then((r) => {
         if (r?.active) setOfflineReady(true);
@@ -63,9 +59,6 @@ export default function HomePage() {
   return (
     <Shell title="Simulator UKKM MRSM 2027">
       <div className="space-y-5">
-        <p className="text-lg font-bold text-blue-900" data-testid="countdown">
-          {daysLeft === null ? '' : daysLeft > 0 ? `${daysLeft} hari lagi` : daysLeft === 0 ? 'Ujian hari ini' : ''}
-        </p>
 
         {active.length > 0 && (
           <section className="card border-blue-300 bg-blue-50">

@@ -60,11 +60,10 @@ export const NO_SEEN: Seen = { ids: new Set(), families: new Set() };
 export const usable = (q: Question) => USABLE_STATUSES.includes(q.validationStatus);
 
 /** Soalan yang layak bagi satu seksyen selepas menapis sejarah mengikut mod tanpa pengulangan. */
-/** Item keperibadian tiada jawapan betul/salah dan tidak dimarkah, jadi ia dikecualikan daripada peraturan tanpa pengulangan. */
+/** Item keperibadian tiada jawapan betul/salah dan tidak dimarkah: item baharu diutamakan, tetapi apabila habis ia boleh berulang. */
 export const repeatable = (sec: Pick<ExamSection, 'bank'>): boolean => sec.bank.length > 0 && sec.bank.every((b) => b === 'keperibadian');
 
-export function eligible(sec: Pick<ExamSection, 'bank' | 'topics'>, bank: Question[], seen: Seen, noRepeatIn: NoRepeat): Question[] {
-  const noRepeat: NoRepeat = repeatable(sec) ? 'off' : noRepeatIn;
+export function eligible(sec: Pick<ExamSection, 'bank' | 'topics'>, bank: Question[], seen: Seen, noRepeat: NoRepeat): Question[] {
   return bank.filter(
     (q) =>
       usable(q) &&
@@ -171,6 +170,8 @@ function assemble(plans: SectionPlan[], bank: Question[], seen: Seen, o: Assembl
   const shortfall: Shortfall[] = [];
   for (const p of plans) {
     let pool = eligible(p, bank, seen, p.fromIds ? 'off' : o.noRepeat);
+    // Keperibadian: guna item belum dipaparkan selagi cukup; jika tidak, benarkan ulangan (tidak dimarkah).
+    if (repeatable(p) && pool.length < p.count) pool = eligible(p, bank, seen, 'off');
     if (p.only) pool = pool.filter((q) => p.only!.includes(q.difficulty));
     if (p.fromIds) pool = pool.filter((q) => p.fromIds!.has(q.id));
     const chosen = pickQuestions(pool, p.count, p.mix, rnd, o.shuffleQuestions, usedFamilies);
@@ -316,7 +317,7 @@ export function capacity(cfg: ExamConfig, bank: Question[], seen: Seen): { secti
   const sections = cfg.sections
     .filter((s) => s.enabled && s.questionCount)
     .map((s) => {
-      const pool = eligible(s, bank, seen, cfg.noRepeat === 'off' ? 'off' : cfg.noRepeat);
+      const pool = eligible(s, bank, seen, cfg.noRepeat === 'off' || repeatable(s) ? 'off' : cfg.noRepeat);
       const counts = new Map<string, number>();
       for (const q of pool) counts.set(q.familyId, (counts.get(q.familyId) ?? 0) + 1);
       const fams = counts.size;

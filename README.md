@@ -64,18 +64,18 @@ Laluan PostgreSQL sebenar (`DATABASE_URL`) dan panggilan AI langsung **tidak diu
 
 ## Tanpa pengulangan
 
-Setiap soalan yang dipaparkan direkod bagi setiap calon. Sesi baharu hanya memilih soalan yang belum pernah dipaparkan; mod "ketat" juga mengelak keluarga soalan (templat sama, nombor berbeza) yang pernah digunakan. Jika soalan baharu tidak mencukupi, sesi dipendekkan dan kekurangan dipaparkan — soalan tidak diulang secara senyap. Sejarah hanya dipadam melalui Admin → Analisis calon. Pengecualian: item Keperibadian (tiada jawapan betul/salah, tidak dimarkah) boleh berulang, kerana bank hanya ada 30 item.
+Setiap soalan yang dipaparkan direkod bagi setiap calon. Sesi baharu hanya memilih soalan yang belum pernah dipaparkan; mod "ketat" juga mengelak keluarga soalan (templat sama, nombor berbeza) yang pernah digunakan. Jika soalan baharu tidak mencukupi, sesi dipendekkan dan kekurangan dipaparkan — soalan tidak diulang secara senyap. Sejarah hanya dipadam melalui Admin → Analisis calon. Pengecualian: item Keperibadian (tiada jawapan betul/salah, tidak dimarkah) — item baharu diutamakan (150 item = 5 set), dan selepas habis ia boleh berulang.
 
 ## Bank soalan — angka sebenar
 
-Sasaran bank ialah 5,000 item. **Bank semasa: 1,854 item** (pada 20 varian setiap templat):
+Sasaran bank ialah 5,000 item. **Bank semasa: 1,974 item** (pada 20 varian setiap templat):
 
 | Subjek | Jumlah | Sasaran | Tulisan tangan | Dijana templat | Keluarga unik |
 |---|---|---|---|---|---|
 | Matematik | 729 | 1,500 | 120 | 609 | 150 |
 | Sains | 260 | 1,500 | 120 | 140 | 127 |
 | STEM-Excellence | 755 | 1,500 | 150 | 605 | 178 |
-| Keperibadian | 30 | 500 | 30 | 0 | 30 |
+| Keperibadian | 150 | 500 | 150 | 0 | 150 |
 | Bahasa Melayu (tidak aktif) | 80 | — | 80 | 0 | 80 |
 
 - **0 item disemak oleh manusia.** 1,537 item berangka disahkan dengan pengiraan bebas automatik; selebihnya hanya melalui semakan struktur dan pendua. Fakta Sains dan bahasa belum disemak guru.
@@ -117,7 +117,7 @@ npm run test:e2e
 docs/                 FORMAT-UKKM-2027.md (bukti), SPEC.md (seni bina)
 server/               index.mjs (statik + API), schema.mjs (Drizzle), ai.mjs (Claude)
 src/lib/              types, config (blueprint + bukti), engine, factory, db (IndexedDB), sync, text, pdf
-src/data/             bank/ (500 item tulisan tangan), templates.ts (70 templat)
+src/data/             bank/ (620 item tulisan tangan), templates.ts (70 templat)
 src/app/              utama, exam, practice, results, history, admin, format
 tests/unit, tests/e2e
 ```

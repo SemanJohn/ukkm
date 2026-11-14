@@ -1,4 +1,5 @@
 import { build, type Raw } from './helpers';
+import { personalityRaws2 } from './personality2';
 
 // Item situasi keperibadian: TIADA jawapan betul/salah dan TIDAK dimarkah.
 // Tiada instrumen atau skema rasmi MARA digunakan atau didakwa.
@@ -42,4 +43,4 @@ const raws: Raw[] = [
   [IN, 'm', 'Anda berjanji membantu rakan mengulang kaji petang ini, tetapi kemudian diajak menyertai aktiviti yang lebih menyeronokkan. Apakah keputusan anda?', ['Menunaikan janji kepada rakan', 'Berbincang dengan rakan untuk menukar masa ulang kaji', 'Mengajak rakan itu menyertai aktiviti tersebut, kemudian mengulang kaji bersama', 'Menyertai aktiviti itu dan meminta maaf kepada rakan'], ''],
 ];
 
-export const personalityBank = build('keperibadian', 'KP', raws);
+export const personalityBank = build('keperibadian', 'KP', [...raws, ...personalityRaws2]);

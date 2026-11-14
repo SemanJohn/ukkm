@@ -131,14 +131,17 @@ describe('enjin tanpa pengulangan', () => {
     for (let i = 0; i < 5; i++) {
       const s = start(DEFAULT_CONFIGS.full, 100 + i, seen);
       expect(s.shortfall).toEqual([]);
-      // Item keperibadian (tidak dimarkah) dikecualikan daripada peraturan tanpa pengulangan.
-      const scoredIds = ids(s).filter((id) => BANK_BY_ID.get(id)?.section !== 'keperibadian');
-      expect(scoredIds.length).toBeLessThan(ids(s).length);
-      for (const id of scoredIds) expect(all, `sesi ${i + 1} mengulang ${id}`).not.toContain(id);
-      all.push(...scoredIds);
+      // 150 item keperibadian = 5 set berlainan; selepas itu sahaja ia boleh berulang.
+      for (const id of ids(s)) expect(all, `sesi ${i + 1} mengulang ${id}`).not.toContain(id);
+      all.push(...ids(s));
       seen = expose(seen, s);
     }
     expect(new Set(all).size).toBe(all.length);
+    // Sesi ke-6: item keperibadian sudah habis, jadi ia berulang tanpa memendekkan seksyen itu.
+    const sixth = start(DEFAULT_CONFIGS.full, 200, seen);
+    const kp = sixth.sections.find((x) => /Keperibadian/.test(x.title));
+    expect(kp?.items).toHaveLength(30);
+    expect(sixth.shortfall.map((x) => x.title).join()).not.toMatch(/Keperibadian/);
   });
 
   it('mod ketat: keluarga masalah yang pernah digunakan tidak muncul lagi', () => {
