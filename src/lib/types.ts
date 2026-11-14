@@ -8,7 +8,7 @@ export const DifficultySchema = z.enum(['easy', 'medium', 'hard', 'advanced']);
 export type Difficulty = z.infer<typeof DifficultySchema>;
 export const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard', 'advanced'];
 
-export const BankSectionSchema = z.enum(['matematik', 'sains', 'bm', 'stem', 'keperibadian']);
+export const BankSectionSchema = z.enum(['matematik', 'sains', 'bm', 'stem', 'keperibadian', 'igcse', 'teknikal']);
 export type BankSection = z.infer<typeof BankSectionSchema>;
 
 /**
@@ -92,7 +92,7 @@ export const ExamSectionSchema = z.object({
 });
 export type ExamSection = z.infer<typeof ExamSectionSchema>;
 
-export const ModeSchema = z.enum(['ukkm', 'stem', 'full']);
+export const ModeSchema = z.enum(['ukkm', 'stem', 'igcse', 'teknikal', 'full']);
 export type Mode = z.infer<typeof ModeSchema>;
 
 /** off = pengulangan dibenarkan; item = tiada soalan yang pernah dipaparkan; family = tiada keluarga masalah yang pernah digunakan. */
@@ -103,7 +103,7 @@ export const ExamConfigSchema = z.object({
   id: ModeSchema,
   name: z.string(),
   year: z.literal(2027),
-  programme: z.literal('Premier STEM-Excellence'),
+  programme: z.string(),
   candidateCategory: z.literal('KPM_SELEPAS_PKSK'),
   formatStatus: VerificationStatusSchema,
   description: z.string(),
@@ -212,4 +212,4 @@ export interface ExamResult extends Tally {
 }
 
 export const DIFF_LABEL: Record<Difficulty, string> = { easy: 'Mudah', medium: 'Sederhana', hard: 'Sukar', advanced: 'KBAT lanjutan' };
-export const SUBJECT_LABEL: Record<BankSection, string> = { matematik: 'Matematik', sains: 'Sains', bm: 'Bahasa Melayu', stem: 'STEM-Excellence', keperibadian: 'Keperibadian' };
+export const SUBJECT_LABEL: Record<BankSection, string> = { matematik: 'Matematik', sains: 'Sains', bm: 'Bahasa Melayu', stem: 'STEM-Excellence', keperibadian: 'Keperibadian', igcse: 'IGCSE', teknikal: 'Teknikal' };

@@ -10,7 +10,7 @@ import { syncNow } from '@/lib/sync';
 import { SUBJECT_LABEL, type BankSection, type PracticeKind } from '@/lib/types';
 
 const KINDS: PracticeKind[] = ['subject', 'unlimited', 'kbat', 'speed', 'adaptive', 'revision'];
-const SUBJECTS: BankSection[] = ['matematik', 'sains', 'stem'];
+const SUBJECTS: BankSection[] = ['matematik', 'sains', 'stem', 'igcse', 'teknikal'];
 
 export default function PracticePage() {
   const [bundle, setBundle] = useState<BankBundle | null>(null);

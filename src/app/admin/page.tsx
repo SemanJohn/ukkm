@@ -304,8 +304,8 @@ function BlueprintTab({ bundle, seen }: { bundle: BankBundle; seen: Seen }) {
 }
 
 /* ---------------- Bank soalan & kilang ---------------- */
-const SUBJECTS: BankSection[] = ['matematik', 'sains', 'stem', 'keperibadian', 'bm'];
-const TARGET: Record<BankSection, number> = { matematik: 1500, sains: 1500, stem: 1500, keperibadian: 500, bm: 0 };
+const SUBJECTS: BankSection[] = ['matematik', 'sains', 'stem', 'igcse', 'teknikal', 'keperibadian', 'bm'];
+const TARGET: Record<BankSection, number> = { matematik: 1500, sains: 1500, stem: 1500, keperibadian: 500, bm: 0, igcse: 0, teknikal: 0 };
 
 function BankTab({ bundle, seen, health, onChanged }: { bundle: BankBundle; seen: Seen; health: ServerHealth | null; onChanged: () => Promise<void> }) {
   const [variants, setV] = useState(bundle.variants);

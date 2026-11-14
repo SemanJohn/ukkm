@@ -3,16 +3,18 @@ import type { Question } from '@/lib/types';
 import { TEMPLATES } from '../templates';
 import { bmBank } from './bm';
 import { build } from './helpers';
+import { igcseBank } from './igcse';
 import { mathBank } from './math';
 import { personalityBank } from './personality';
 import { scienceBank } from './science';
 import { stemRaws1 } from './stem1';
 import { stemRaws2 } from './stem2';
+import { teknikalBank } from './teknikal';
 
 export const stemBank = build('stem', 'ST', [...stemRaws1, ...stemRaws2]);
 
-/** 500 item tulisan tangan: 120 Matematik + 120 Sains + 80 BM + 150 STEM + 30 Keperibadian. */
-export const MANUAL_BANK: Question[] = [...mathBank, ...scienceBank, ...bmBank, ...stemBank, ...personalityBank];
+/** Item tulisan tangan: 120 Matematik + 120 Sains + 80 BM + 150 STEM + 150 Keperibadian + 120 IGCSE + 120 Teknikal. */
+export const MANUAL_BANK: Question[] = [...mathBank, ...scienceBank, ...bmBank, ...stemBank, ...personalityBank, ...igcseBank, ...teknikalBank];
 
 export const DEFAULT_VARIANTS = 20;
 export const MAX_VARIANTS = 60;

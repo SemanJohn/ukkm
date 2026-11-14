@@ -1,8 +1,8 @@
 # Simulator UKKM MRSM 2027 — latihan tidak rasmi
 
-Simulasi UKKM dan Ujian Khas Premier STEM-Excellence bagi kemasukan MRSM Tingkatan 1 2027, khusus untuk **murid sekolah KPM yang sudah menduduki PKSK**.
+Simulasi UKKM dan Ujian Khas (Premier STEM-Excellence, IGCSE, Teknikal) bagi kemasukan MRSM Tingkatan 1 2027, khusus untuk **murid sekolah KPM yang sudah menduduki PKSK**.
 
-> **Bukan sistem rasmi MARA atau KPM.** Tiada soalan rasmi. MARA tidak menerbitkan komponen, bilangan soalan atau tempoh UKKM bagi calon KPM selepas PKSK, mahupun format Ujian Khas STEM-Excellence. Semua blueprint berstatus `UNVERIFIED_PRACTICE`. Markah simulasi bukan skor merit dan tidak meramalkan tawaran. Butiran: [docs/FORMAT-UKKM-2027.md](docs/FORMAT-UKKM-2027.md).
+> **Bukan sistem rasmi MARA atau KPM.** Tiada soalan rasmi. MARA tidak menerbitkan komponen, bilangan soalan atau tempoh UKKM bagi calon KPM selepas PKSK, mahupun format Ujian Khas STEM-Excellence, IGCSE atau Teknikal. Semua blueprint berstatus `UNVERIFIED_PRACTICE`. Markah simulasi bukan skor merit dan tidak meramalkan tawaran. Butiran: [docs/FORMAT-UKKM-2027.md](docs/FORMAT-UKKM-2027.md).
 
 ## Cara menjalankan
 
@@ -54,8 +54,10 @@ Laluan PostgreSQL sebenar (`DATABASE_URL`) dan panggilan AI langsung **tidak diu
 |---|---|
 | UKKM | Matematik 30 soalan/45 min · Sains 30/40 min. Keperibadian dan Bahasa Melayu **tidak aktif** (aktifkan di Admin jika disahkan diperlukan) |
 | Ujian Khas STEM-Excellence | Tiga seksyen × 15 soalan (25/20/20 min) |
+| Ujian Khas IGCSE | English 20 soalan/25 min · Mathematics & Science in English 10/15 min (soalan dalam Bahasa Inggeris) |
+| Ujian Khas Teknikal | Mekanikal, Elektrik & Bahan 20/25 min · Robotik, IoT & Penaakulan Ruang 10/15 min |
 | Simulasi Penuh | Matematik, Sains, Keperibadian (80 item/30 min, tidak dimarkah) + STEM-Excellence: 185 soalan, 180 min. PKSK tidak dimasukkan |
-| Latihan Subjek | Matematik, Sains atau STEM |
+| Latihan Subjek | Matematik, Sains, STEM, IGCSE atau Teknikal |
 | Cabaran KBAT | Aras sukar dan KBAT lanjutan sahaja |
 | Ujian Pantas | 30 saat setiap soalan |
 | Latihan Adaptif | Aras naik selepas betul, turun selepas salah |
@@ -68,19 +70,21 @@ Setiap soalan yang dipaparkan direkod bagi setiap calon. Sesi baharu hanya memil
 
 ## Bank soalan — angka sebenar
 
-Sasaran bank ialah 5,000 item. **Bank semasa: 1,974 item** (pada 20 varian setiap templat):
+Sasaran bank ialah 5,000 item. **Bank semasa: 2,214 item** (pada 20 varian setiap templat):
 
 | Subjek | Jumlah | Sasaran | Tulisan tangan | Dijana templat | Keluarga unik |
 |---|---|---|---|---|---|
 | Matematik | 729 | 1,500 | 120 | 609 | 150 |
 | Sains | 260 | 1,500 | 120 | 140 | 127 |
 | STEM-Excellence | 755 | 1,500 | 150 | 605 | 178 |
+| IGCSE | 120 | — | 120 | 0 | 120 |
+| Teknikal | 120 | — | 120 | 0 | 120 |
 | Keperibadian | 150 | 500 | 150 | 0 | 150 |
 | Bahasa Melayu (tidak aktif) | 80 | — | 80 | 0 | 80 |
 
 - **0 item disemak oleh manusia.** 1,537 item berangka disahkan dengan pengiraan bebas automatik; selebihnya hanya melalui semakan struktur dan pendua. Fakta Sains dan bahasa belum disemak guru.
 - Item templat ialah varian nombor/konteks bagi 70 struktur masalah. Ia latihan yang sah tetapi bukan 1,354 masalah yang berlainan.
-- Sesi penuh tanpa ulangan yang boleh dibina sekarang: **UKKM 5, STEM-Excellence 6, Simulasi Penuh 5**. Sains ialah had (hanya 7 templat berangka; soalan konsep tidak boleh dijana secara deterministik).
+- Sesi penuh tanpa ulangan yang boleh dibina sekarang: **UKKM 5, STEM-Excellence 6, IGCSE 4, Teknikal 4, Simulasi Penuh 5**. Sains ialah had (hanya 7 templat berangka; soalan konsep tidak boleh dijana secara deterministik).
 - Menaikkan "varian setiap templat" (Admin → Bank soalan, hingga 60) menambah item Matematik dan STEM, tetapi tidak menambah soalan konsep Sains atau item Keperibadian.
 - Untuk menambah Sains/Keperibadian: tulis item dalam `src/data/bank/`, atau gunakan penjanaan AI dan luluskan setiap item di Admin → Semakan item.
 
@@ -103,7 +107,7 @@ Jika surat panggilan menyatakan komponen atau tempoh sebenar, kemas kini bluepri
 npm test
 ```
 
-77 ujian Vitest: validasi setiap item, pengiraan bebas, kilang dan pendua, tanpa pengulangan (item dan keluarga), kekurangan bank, mod latihan dan adaptif, pemasa/auto-hantar, pemarkahan, transaksi dan sesi serentak (IndexedDB), versi blueprint, dan pelayan penyelarasan melalui HTTP (gabungan dua peranti, konflik sesi, kuarantin item, token).
+78 ujian Vitest: validasi setiap item, pengiraan bebas, kilang dan pendua, tanpa pengulangan (item dan keluarga), kekurangan bank, mod latihan dan adaptif, pemasa/auto-hantar, pemarkahan, transaksi dan sesi serentak (IndexedDB), versi blueprint, dan pelayan penyelarasan melalui HTTP (gabungan dua peranti, konflik sesi, kuarantin item, token).
 
 ```bash
 npm run test:e2e
@@ -117,7 +121,7 @@ npm run test:e2e
 docs/                 FORMAT-UKKM-2027.md (bukti), SPEC.md (seni bina)
 server/               index.mjs (statik + API), schema.mjs (Drizzle), ai.mjs (Claude)
 src/lib/              types, config (blueprint + bukti), engine, factory, db (IndexedDB), sync, text, pdf
-src/data/             bank/ (620 item tulisan tangan), templates.ts (70 templat)
+src/data/             bank/ (860 item tulisan tangan), templates.ts (70 templat)
 src/app/              utama, exam, practice, results, history, admin, format
 tests/unit, tests/e2e
 ```
@@ -125,7 +129,8 @@ tests/unit, tests/e2e
 ## Batasan yang diketahui
 
 - Format sebenar ujian MARA mungkin berbeza dalam setiap aspek yang berstatus `UNVERIFIED_PRACTICE`.
-- Semua soalan berbentuk objektif empat pilihan dalam Bahasa Melayu.
+- Semua soalan berbentuk objektif empat pilihan; dalam Bahasa Melayu kecuali mod IGCSE (Bahasa Inggeris).
+- Kandungan mod IGCSE dan Teknikal ialah tekaan munasabah berdasarkan huraian program, bukan skop ujian yang disahkan.
 - Pelayan tiada akaun pengguna; `SYNC_TOKEN` ialah satu-satunya kawalan capaian. Jangan dedahkan ke Internet tanpanya.
 - Calon dikenal pasti melalui nama; dua peranti mesti menggunakan nama calon yang sama untuk berkongsi sejarah.
 - Folder projek berada dalam Google Drive; `node_modules`, `.next` dan `out` turut disegerakkan melainkan dikecualikan. Pangkalan data pelayan sengaja disimpan di luar Google Drive, jadi ia tidak berpindah ke komputer lain bersama folder projek.

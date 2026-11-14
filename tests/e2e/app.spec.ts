@@ -366,7 +366,7 @@ for (const vp of [
   test(`paparan ${vp.name} (${vp.width}×${vp.height})`, async ({ page }) => {
     await page.setViewportSize({ width: vp.width, height: vp.height });
     await page.goto('/');
-    for (const m of ['ukkm', 'stem', 'full']) await expect(page.getByTestId(`mode-${m}`)).toBeVisible();
+    for (const m of ['ukkm', 'stem', 'igcse', 'teknikal', 'full']) await expect(page.getByTestId(`mode-${m}`)).toBeVisible();
     expect(await noOverflow(page)).toBe(true);
 
     for (const path of ['/admin/', '/format/', '/history/', '/practice/', '/exam/?mode=full']) {

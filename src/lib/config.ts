@@ -56,11 +56,33 @@ const stemSections: ExamSection[] = [
   { id: 'stem-logik', title: 'STEM: Data, Logik & Pemikiran Komputasional', enabled: true, bank: ['stem'], topics: [...STEM_TOPICS.logik], questionCount: 15, durationMinutes: 20, difficulty: MIX_STEM, scored: true, verificationStatus: P, note: STEM_NOTE },
 ];
 
+export const IGCSE_TOPICS = {
+  english: ['Grammar', 'Vocabulary', 'Reading Comprehension'],
+  content: ['Mathematics in English', 'Science in English'],
+} as const;
+export const TEKNIKAL_TOPICS = {
+  asas: ['Mesin Ringkas & Mekanikal', 'Elektrik & Litar', 'Bahan & Alatan'],
+  reka: ['Robotik & IoT', 'Penaakulan Ruang & Reka Bentuk'],
+} as const;
+const MIX_KHAS: DifficultyMix = { easy: 20, medium: 45, hard: 25, advanced: 10 };
+const IGCSE_NOTE = 'Format Ujian Khas IGCSE tidak diterbitkan oleh MARA; hanya nama ujian disenaraikan. Bidang (Bahasa Inggeris; Matematik dan Sains dalam Bahasa Inggeris), bilangan soalan dan tempoh ialah cadangan latihan.';
+const igcseSections: ExamSection[] = [
+  { id: 'igcse-english', title: 'IGCSE: English', enabled: true, bank: ['igcse'], topics: [...IGCSE_TOPICS.english], questionCount: 20, durationMinutes: 25, difficulty: MIX_KHAS, scored: true, verificationStatus: P, note: IGCSE_NOTE },
+  { id: 'igcse-content', title: 'IGCSE: Mathematics & Science in English', enabled: true, bank: ['igcse'], topics: [...IGCSE_TOPICS.content], questionCount: 10, durationMinutes: 15, difficulty: MIX_KHAS, scored: true, verificationStatus: P, note: IGCSE_NOTE },
+];
+const TEK_NOTE = 'Format Ujian Khas Teknikal tidak diterbitkan oleh MARA; hanya nama ujian disenaraikan. Bidang, bilangan soalan dan tempoh ialah cadangan latihan.';
+const teknikalSections: ExamSection[] = [
+  { id: 'teknikal-asas', title: 'Teknikal: Mekanikal, Elektrik & Bahan', enabled: true, bank: ['teknikal'], topics: [...TEKNIKAL_TOPICS.asas], questionCount: 20, durationMinutes: 25, difficulty: MIX_KHAS, scored: true, verificationStatus: P, note: TEK_NOTE },
+  { id: 'teknikal-reka', title: 'Teknikal: Robotik, IoT & Penaakulan Ruang', enabled: true, bank: ['teknikal'], topics: [...TEKNIKAL_TOPICS.reka], questionCount: 10, durationMinutes: 15, difficulty: MIX_KHAS, scored: true, verificationStatus: P, note: TEK_NOTE },
+];
+
 const base = { year: 2027, programme: 'Premier STEM-Excellence', candidateCategory: 'KPM_SELEPAS_PKSK', formatStatus: P, allowBackNavigation: true, allowCalculator: false, shuffleQuestions: true, shuffleOptions: true, noRepeat: 'item' } as const;
 
 export const DEFAULT_CONFIGS: Record<Mode, ExamConfig> = {
   ukkm: { ...base, id: 'ukkm', name: 'UKKM — Matematik & Sains', description: 'Latihan Matematik dan Sains Tahun 4–6. Keperibadian dan Bahasa Melayu boleh diaktifkan di Admin jika disahkan diperlukan.', sections: ukkmSections },
   stem: { ...base, id: 'stem', name: 'Ujian Khas Premier STEM-Excellence', description: 'Latihan penaakulan matematik, pemikiran saintifik, analisis data, logik dan pemikiran komputasional.', sections: stemSections },
+  igcse: { ...base, programme: 'IGCSE', id: 'igcse', name: 'Ujian Khas IGCSE', description: 'Latihan Bahasa Inggeris serta Matematik dan Sains dalam Bahasa Inggeris.', sections: igcseSections },
+  teknikal: { ...base, programme: 'Teknikal', id: 'teknikal', name: 'Ujian Khas Teknikal', description: 'Latihan penaakulan mekanikal, elektrik, bahan, robotik, IoT dan penaakulan ruang.', sections: teknikalSections },
   full: {
     ...base, id: 'full', name: 'Simulasi Penuh — UKKM + STEM-Excellence',
     description: 'Matematik, Sains dan Keperibadian diikuti seksyen STEM-Excellence dalam satu sesi. PKSK tidak dimasukkan.',
@@ -69,7 +91,7 @@ export const DEFAULT_CONFIGS: Record<Mode, ExamConfig> = {
   },
 };
 
-export const MODES: Mode[] = ['ukkm', 'stem', 'full'];
+export const MODES: Mode[] = ['ukkm', 'stem', 'igcse', 'teknikal', 'full'];
 
 export const STATUS_LABEL: Record<VerificationStatus, string> = {
   OFFICIAL_2027_VERIFIED: 'Rasmi 2027 (disahkan)',
@@ -101,6 +123,8 @@ export const EVIDENCE: EvidenceRow[] = [
   { item: 'Slot ujian calon: 10.30 pagi – 12.30 tengah hari, MRSM Muar, 18 Nov 2026, dengan ujian tambahan STEM-Excellence', finding: 'Dimaklumkan oleh keluarga daripada surat panggilan. Surat tidak dilihat oleh pembangun; pembahagian masa antara komponen tidak diketahui.', source: 'Surat panggilan UKKM 2027 (laporan keluarga)', sourceUrl: SRC.semakan, docYear: '2027', covers: 'Calon ini', status: P },
   { item: 'Bilangan soalan & masa setiap komponen', finding: 'Tidak diterbitkan dalam mana-mana dokumen rasmi yang dicapai.', source: '—', docYear: '—', covers: 'Semua kategori', status: P },
   { item: 'Format Ujian Khas Premier STEM-Excellence (skop, bilangan soalan, masa)', finding: 'Tidak diterbitkan. Hanya nama ujian disenaraikan.', source: 'Syarat hlm 15', sourceUrl: SRC.syarat, docYear: '2027', covers: 'Semua kategori', status: P },
+  { item: 'IGCSE dan Teknikal ialah Program Khas Tingkatan 1 dengan Ujian Khas', finding: 'Kedua-duanya tersenarai di bawah “Ujian Program Khas” bersama Ulul Albab, Premier STEM-Excellence dan Bitara.', source: 'Syarat dan Pilihan Program MRSM hlm 15', sourceUrl: SRC.syarat, docYear: '2027', covers: 'Calon yang memilih Program Khas sebagai pilihan pertama', status: O },
+  { item: 'Format Ujian Khas IGCSE dan Ujian Khas Teknikal (skop, bilangan soalan, masa, bahasa)', finding: 'Tidak diterbitkan. Hanya nama program disenaraikan; kandungan mod IGCSE dan Teknikal dalam simulator ini ialah cadangan latihan.', source: 'Syarat hlm 15', sourceUrl: SRC.syarat, docYear: '2027', covers: 'Semua kategori', status: P },
   { item: 'Jenis soalan (objektif/subjektif), antaramuka, arahan calon', finding: 'Tiada contoh antaramuka atau arahan calon diterbitkan. Halaman semakan hanya mengandungi borang log masuk.', source: 'Halaman Semakan UKKM T1 2027', sourceUrl: SRC.semakan, docYear: '2027', covers: 'Semua kategori', status: P },
   { item: 'Dakwaan: 40 soalan Matematik/40 minit; 30 soalan Sains; 80 item Keperibadian; 35 minit STEM-Excellence; 20 soalan/30 minit; ujian 2 jam 4 subjek', finding: 'Daripada laman pihak ketiga dan maklumat terdahulu; saling bercanggah; tiada dokumen rasmi; kategori calon tidak jelas. TIDAK digunakan sebagai format rasmi.', source: 'Laman bukan rasmi (cikguonline, infosini, ecentral dll.)', docYear: 'Kitaran terdahulu / tidak dinyatakan', covers: 'Tidak jelas', status: 'PREVIOUS_YEAR_REFERENCE' },
 ];

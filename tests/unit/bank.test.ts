@@ -12,8 +12,10 @@ const generated = BANK.filter((q) => q.sourceType === 'template-generated');
 const { report } = buildBank();
 
 describe('bank tulisan tangan — struktur', () => {
-  it('620 item tulisan tangan mengikut pecahan', () => {
-    expect(MANUAL_BANK).toHaveLength(620);
+  it('860 item tulisan tangan mengikut pecahan', () => {
+    expect(MANUAL_BANK).toHaveLength(860);
+    expect(manual('igcse')).toHaveLength(120);
+    expect(manual('teknikal')).toHaveLength(120);
     expect(manual('matematik')).toHaveLength(120);
     expect(manual('sains')).toHaveLength(120);
     expect(manual('bm')).toHaveLength(80);
@@ -22,7 +24,7 @@ describe('bank tulisan tangan — struktur', () => {
   });
 
   it('kedudukan jawapan betul tersebar antara A–D', () => {
-    for (const section of ['matematik', 'sains', 'bm', 'stem'] as const) {
+    for (const section of ['matematik', 'sains', 'bm', 'stem', 'igcse', 'teknikal'] as const) {
       const counts = [0, 0, 0, 0];
       for (const q of manual(section)) counts[q.correctAnswer!]++;
       for (const c of counts) {
@@ -194,12 +196,22 @@ describe('semakan item luaran / AI (kuarantin)', () => {
 });
 
 describe('padanan bank dengan blueprint', () => {
-  it('setiap komponen aktif mempunyai soalan mencukupi untuk sekurang-kurangnya 5 sesi baharu', () => {
+  it('setiap komponen aktif mempunyai soalan mencukupi untuk sekurang-kurangnya 5 sesi baharu (IGCSE/Teknikal: 4)', () => {
     for (const mode of MODES) {
       for (const s of DEFAULT_CONFIGS[mode].sections.filter((x) => x.enabled && !repeatable(x))) {
         const pool = eligible(s, BANK, NO_SEEN, 'item');
-        expect(pool.length, `${mode}/${s.id}`).toBeGreaterThanOrEqual(5 * (s.questionCount ?? 0));
+        expect(pool.length, `${mode}/${s.id}`).toBeGreaterThanOrEqual((mode === 'igcse' || mode === 'teknikal' ? 4 : 5) * (s.questionCount ?? 0));
       }
+    }
+  });
+
+  it('topik seksyen IGCSE dan Teknikal wujud dalam bank dan semuanya digunakan', () => {
+    for (const mode of ['igcse', 'teknikal'] as const) {
+      const topics = new Set(BANK.filter((q) => q.section === mode).map((q) => q.topic));
+      const covered = new Set(DEFAULT_CONFIGS[mode].sections.flatMap((s) => s.topics ?? []));
+      expect([...topics].sort()).toEqual([...covered].sort());
+      expect(DEFAULT_CONFIGS[mode].formatStatus).toBe('UNVERIFIED_PRACTICE');
+      for (const s of DEFAULT_CONFIGS[mode].sections) expect(s.verificationStatus).toBe('UNVERIFIED_PRACTICE');
     }
   });
 

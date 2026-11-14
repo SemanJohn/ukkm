@@ -9,7 +9,7 @@ import { capacity } from '@/lib/engine';
 import { syncNow, type SyncResult } from '@/lib/sync';
 import type { ExamConfig, Mode, Session } from '@/lib/types';
 
-const MODE_TITLE: Record<Mode, string> = { ukkm: 'UKKM', stem: 'STEM-Excellence', full: 'Simulasi Penuh' };
+const MODE_TITLE: Record<Mode, string> = { ukkm: 'UKKM', stem: 'STEM-Excellence', igcse: 'IGCSE', teknikal: 'Teknikal', full: 'Simulasi Penuh' };
 
 export default function HomePage() {
   const [configs, setConfigs] = useState<Record<Mode, ExamConfig>>(DEFAULT_CONFIGS);
