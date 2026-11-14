@@ -390,3 +390,20 @@ for (const vp of [
     await expect(page.getByTestId('confirm-finish')).toBeInViewport();
   });
 }
+
+test('Simulasi Penuh: pilihan program menukar seksyen Ujian Khas', async ({ page }) => {
+  await page.goto('/exam/?mode=full');
+  const main = page.locator('main');
+  await expect(main).toContainText('STEM: Sains & Pemikiran Saintifik');
+  await page.getByTestId('prog-igcse').check();
+  await expect(main).toContainText('IGCSE: English');
+  await expect(main).not.toContainText('STEM: Sains & Pemikiran Saintifik');
+  await expect(main).toContainText('Matematik');
+  await page.getByTestId('prog-teknikal').check();
+  await expect(main).toContainText('Teknikal: Mekanikal, Elektrik & Bahan');
+  await expect(main).not.toContainText('IGCSE: English');
+  await page.locator('#cand-name').fill('Calon Penuh Teknikal');
+  await page.getByTestId('confirm-candidate').check();
+  await page.getByTestId('start-exam').click();
+  await expect(page.getByTestId('timer')).toBeVisible();
+});

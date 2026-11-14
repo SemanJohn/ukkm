@@ -85,7 +85,7 @@ export const DEFAULT_CONFIGS: Record<Mode, ExamConfig> = {
   teknikal: { ...base, programme: 'Teknikal', id: 'teknikal', name: 'Ujian Khas Teknikal', description: 'Latihan penaakulan mekanikal, elektrik, bahan, robotik, IoT dan penaakulan ruang.', sections: teknikalSections },
   full: {
     ...base, id: 'full', name: 'Simulasi Penuh — UKKM + STEM-Excellence',
-    description: 'Matematik, Sains dan Keperibadian diikuti seksyen STEM-Excellence dalam satu sesi. PKSK tidak dimasukkan.',
+    description: 'Matematik, Sains dan Keperibadian diikuti Ujian Khas program pilihan (STEM-Excellence, IGCSE atau Teknikal) dalam satu sesi. PKSK tidak dimasukkan.',
     // Keperibadian diaktifkan dalam Simulasi Penuh sahaja (atas permintaan keluarga; masih tidak disahkan bagi calon KPM).
     sections: [...ukkmSections.map((s) => ({ ...s, id: 'full-' + s.id, enabled: s.enabled || s.id === 'keperibadian' })), ...stemSections.map((s) => ({ ...s, id: 'full-' + s.id }))],
   },

@@ -16,6 +16,14 @@ type Phase =
   | { kind: 'intro'; cfg: ExamConfig; bundle: BankBundle }
   | { kind: 'running'; session: Session; bundle: BankBundle };
 
+const PROGRAMMES = [
+  { id: 'stem', label: 'STEM-Excellence' },
+  { id: 'igcse', label: 'IGCSE' },
+  { id: 'teknikal', label: 'Teknikal' },
+] as const;
+type Prog = (typeof PROGRAMMES)[number]['id'];
+const special = (s: { bank: string[] }) => s.bank.every((b) => b === 'stem' || b === 'igcse' || b === 'teknikal');
+
 const PRACTICE = ['subject', 'kbat', 'speed', 'revision', 'unlimited', 'adaptive'];
 
 export default function ExamPage() {
@@ -25,6 +33,8 @@ export default function ExamPage() {
   const [confirmed, setConfirmed] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [starting, setStarting] = useState(false);
+  const [prog, setProg] = useState<Prog>('stem');
+  const [progCfgs, setProgCfgs] = useState<Partial<Record<Prog, ExamConfig>>>({});
 
   useEffect(() => {
     (async () => {
@@ -54,6 +64,7 @@ export default function ExamPage() {
       await Promise.race([syncNow(), new Promise((r) => setTimeout(r, 4000))]);
       const candidate = await getCandidateName();
       setName(candidate);
+      if (parsed.data === 'full') setProgCfgs(Object.fromEntries(await Promise.all(PROGRAMMES.map(async (p) => [p.id, await loadConfig(p.id)] as const))));
       setPhase({ kind: 'intro', cfg: await loadConfig(parsed.data), bundle: await loadBank() });
     })().catch((e) => setPhase({ kind: 'error', message: String(e?.message ?? e) }));
   }, []);
@@ -95,6 +106,16 @@ export default function ExamPage() {
   const { cfg, bundle } = phase;
   const optionals = cfg.sections.filter((s) => optional(s) && s.questionCount);
   const toggle = (id: string) => setPhase({ kind: 'intro', bundle, cfg: { ...cfg, sections: cfg.sections.map((s) => (s.id === id ? { ...s, enabled: !s.enabled } : s)) } });
+  const pick = (p: Prog) => {
+    const src = progCfgs[p];
+    if (!src) return;
+    setProg(p);
+    const label = PROGRAMMES.find((x) => x.id === p)!.label;
+    setPhase({
+      kind: 'intro', bundle,
+      cfg: { ...cfg, name: `Simulasi Penuh — UKKM + ${label}`, programme: src.programme, sections: [...cfg.sections.filter((s) => !special(s)), ...src.sections.filter((s) => s.enabled).map((s) => ({ ...s, id: 'full-' + s.id }))] },
+    });
+  };
   const runnable = cfg.sections.filter((s) => s.enabled && s.questionCount);
   const totalQ = runnable.reduce((a, s) => a + (s.questionCount ?? 0), 0);
   const totalMin = runnable.reduce((a, s) => a + (s.durationMinutes ?? 0), 0);
@@ -122,6 +143,19 @@ export default function ExamPage() {
     <Shell title={cfg.name}>
       <div className="space-y-5">
         <section className="card">
+          {cfg.id === 'full' && (
+            <fieldset className="mb-4">
+              <legend className="text-sm font-medium">Program</legend>
+              <div className="mt-2 flex flex-wrap gap-x-6 gap-y-2">
+                {PROGRAMMES.map((p) => (
+                  <label key={p.id} className="flex items-center gap-2 text-sm">
+                    <input type="radio" name="prog" className="h-5 w-5" checked={prog === p.id} onChange={() => pick(p.id)} data-testid={`prog-${p.id}`} />
+                    {p.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          )}
           {optionals.length > 0 && (
             <fieldset className="mb-4">
               <legend className="text-sm font-medium">Komponen pilihan</legend>

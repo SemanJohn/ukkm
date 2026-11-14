@@ -56,7 +56,7 @@ Laluan PostgreSQL sebenar (`DATABASE_URL`) dan panggilan AI langsung **tidak diu
 | Ujian Khas STEM-Excellence | Tiga seksyen × 15 soalan (25/20/20 min) |
 | Ujian Khas IGCSE | English 20 soalan/25 min · Mathematics & Science in English 10/15 min (soalan dalam Bahasa Inggeris) |
 | Ujian Khas Teknikal | Mekanikal, Elektrik & Bahan 20/25 min · Robotik, IoT & Penaakulan Ruang 10/15 min |
-| Simulasi Penuh | Matematik, Sains, Keperibadian (80 item/30 min, tidak dimarkah) + STEM-Excellence: 185 soalan, 180 min. PKSK tidak dimasukkan |
+| Simulasi Penuh | Matematik, Sains, Keperibadian (80 item/30 min, tidak dimarkah) + Ujian Khas program yang dipilih pada skrin mula: STEM-Excellence (185 soalan, 180 min), IGCSE atau Teknikal (170 soalan, 155 min). PKSK tidak dimasukkan |
 | Latihan Subjek | Matematik, Sains, STEM, IGCSE atau Teknikal |
 | Cabaran KBAT | Aras sukar dan KBAT lanjutan sahaja |
 | Ujian Pantas | 30 saat setiap soalan |
@@ -113,7 +113,7 @@ npm test
 npm run test:e2e
 ```
 
-10 ujian Playwright pada binaan sebenar (jalankan `npm run build` dahulu; `npx playwright install chromium` sekali): aliran penuh hingga PDF, tiga sesi berturut-turut tanpa soalan sama, pemasa dan auto-hantar, Admin, mod latihan, penyelarasan dua peranti, luar talian kemudian selaras, paparan telefon/tablet/laptop.
+11 ujian Playwright pada binaan sebenar (jalankan `npm run build` dahulu; `npx playwright install chromium` sekali): aliran penuh hingga PDF, tiga sesi berturut-turut tanpa soalan sama, pemasa dan auto-hantar, Admin, mod latihan, penyelarasan dua peranti, luar talian kemudian selaras, paparan telefon/tablet/laptop.
 
 ## Struktur
 
