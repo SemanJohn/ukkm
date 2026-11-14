@@ -131,16 +131,22 @@ describe('enjin tanpa pengulangan', () => {
     for (let i = 0; i < 5; i++) {
       const s = start(DEFAULT_CONFIGS.full, 100 + i, seen);
       expect(s.shortfall).toEqual([]);
-      // 150 item keperibadian = 5 set berlainan; selepas itu sahaja ia boleh berulang.
-      for (const id of ids(s)) expect(all, `sesi ${i + 1} mengulang ${id}`).not.toContain(id);
-      all.push(...ids(s));
+      // Item keperibadian (tidak dimarkah) boleh berulang apabila item baharu habis; yang lain tidak pernah berulang.
+      const kpIds = ids(s).filter((id) => BANK_BY_ID.get(id)?.section === 'keperibadian');
+      expect(kpIds).toHaveLength(80);
+      expect(new Set(kpIds).size).toBe(80);
+      if (i === 0) expect(kpIds.filter((id) => seen.ids.has(id))).toHaveLength(0);
+      if (i === 1) expect(kpIds.filter((id) => !seen.ids.has(id))).toHaveLength(70); // 150 − 80 item baharu didahulukan
+      const scoredIds = ids(s).filter((id) => BANK_BY_ID.get(id)?.section !== 'keperibadian');
+      for (const id of scoredIds) expect(all, `sesi ${i + 1} mengulang ${id}`).not.toContain(id);
+      all.push(...scoredIds);
       seen = expose(seen, s);
     }
     expect(new Set(all).size).toBe(all.length);
     // Sesi ke-6: item keperibadian sudah habis, jadi ia berulang tanpa memendekkan seksyen itu.
     const sixth = start(DEFAULT_CONFIGS.full, 200, seen);
     const kp = sixth.sections.find((x) => /Keperibadian/.test(x.title));
-    expect(kp?.items).toHaveLength(30);
+    expect(kp?.items).toHaveLength(80);
     expect(sixth.shortfall.map((x) => x.title).join()).not.toMatch(/Keperibadian/);
   });
 

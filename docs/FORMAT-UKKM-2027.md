@@ -51,7 +51,7 @@ Aplikasi ini bukan sistem rasmi MARA/KPM.
 ## Kesan terhadap aplikasi
 
 - **Tiada blueprint berstatus rasmi.** Ketiga-tiga blueprint (`ukkm`, `stem`, `full`) berstatus `UNVERIFIED_PRACTICE`.
-- Blueprint lalai untuk calon KPM selepas PKSK: Matematik + Sains aktif; Bahasa Melayu tidak aktif; PKSK tiada. **Keperibadian** tidak aktif dalam mod UKKM tetapi diaktifkan dalam Simulasi Penuh atas permintaan keluarga (14 Nov 2026) — ini pilihan latihan, bukan dapatan bahawa calon KPM diuji Keperibadian. Semuanya boleh ditukar di Admin → Blueprint.
+- Blueprint lalai untuk calon KPM selepas PKSK: Matematik + Sains aktif; Bahasa Melayu tidak aktif; PKSK tiada. **Keperibadian** tidak aktif dalam mod UKKM tetapi diaktifkan dalam Simulasi Penuh atas permintaan keluarga (14 Nov 2026) — ini pilihan latihan, bukan dapatan bahawa calon KPM diuji Keperibadian. Bilangan 80 item diambil daripada laman pihak ketiga (`PREVIOUS_YEAR_REFERENCE`), bukan dokumen rasmi. Keperibadian dan Bahasa Melayu boleh dihidupkan atau dimatikan pada skrin mula. Semuanya boleh ditukar di Admin → Blueprint.
 - Admin membenarkan status ditukar kepada `OFFICIAL_2027_VERIFIED`, tetapi hanya jika catatan perubahan menyatakan dokumen sumbernya. Perubahan direkodkan sebagai versi blueprint.
 - Preset Matematik 30 soalan/45 min dan Sains 30/40 min (85 min) dipilih supaya muat dalam slot 2 jam yang dilaporkan; ini pilihan latihan, bukan dapatan.
 

@@ -60,6 +60,9 @@ export const NO_SEEN: Seen = { ids: new Set(), families: new Set() };
 export const usable = (q: Question) => USABLE_STATUSES.includes(q.validationStatus);
 
 /** Soalan yang layak bagi satu seksyen selepas menapis sejarah mengikut mod tanpa pengulangan. */
+/** Komponen pilihan: boleh dihidupkan atau dimatikan oleh calon pada skrin mula. */
+export const optional = (sec: Pick<ExamSection, 'bank'>): boolean => sec.bank.length > 0 && sec.bank.every((b) => b === 'keperibadian' || b === 'bm');
+
 /** Item keperibadian tiada jawapan betul/salah dan tidak dimarkah: item baharu diutamakan, tetapi apabila habis ia boleh berulang. */
 export const repeatable = (sec: Pick<ExamSection, 'bank'>): boolean => sec.bank.length > 0 && sec.bank.every((b) => b === 'keperibadian');
 
@@ -170,11 +173,15 @@ function assemble(plans: SectionPlan[], bank: Question[], seen: Seen, o: Assembl
   const shortfall: Shortfall[] = [];
   for (const p of plans) {
     let pool = eligible(p, bank, seen, p.fromIds ? 'off' : o.noRepeat);
-    // Keperibadian: guna item belum dipaparkan selagi cukup; jika tidak, benarkan ulangan (tidak dimarkah).
-    if (repeatable(p) && pool.length < p.count) pool = eligible(p, bank, seen, 'off');
     if (p.only) pool = pool.filter((q) => p.only!.includes(q.difficulty));
     if (p.fromIds) pool = pool.filter((q) => p.fromIds!.has(q.id));
-    const chosen = pickQuestions(pool, p.count, p.mix, rnd, o.shuffleQuestions, usedFamilies);
+    let chosen = pickQuestions(pool, p.count, p.mix, rnd, o.shuffleQuestions, usedFamilies);
+    // Keperibadian (tidak dimarkah): item belum dipaparkan didahulukan; baki diisi dengan item yang pernah dipaparkan.
+    if (repeatable(p) && chosen.length < p.count) {
+      const have = new Set(chosen.map((q) => q.id));
+      const rest = eligible(p, bank, seen, 'off').filter((q) => !have.has(q.id));
+      chosen = chosen.concat(pickQuestions(rest, p.count - chosen.length, p.mix, rnd, o.shuffleQuestions, usedFamilies));
+    }
     // Tidak cukup soalan unik: laporkan kekurangan — JANGAN ulang soalan secara senyap.
     if (chosen.length < p.count) shortfall.push({ title: p.title, wanted: p.count, got: chosen.length });
     if (chosen.length === 0) continue;

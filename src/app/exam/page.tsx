@@ -6,7 +6,7 @@ import ExamRunner from '@/components/ExamRunner';
 import Shell from '@/components/Shell';
 import type { BankBundle } from '@/data/bank';
 import { getActiveSession, getCandidateName, getSeen, loadBank, loadConfig, saveSession, setCandidateName, startExam } from '@/lib/db';
-import { capacity, tick, type Capacity } from '@/lib/engine';
+import { capacity, optional, tick, type Capacity } from '@/lib/engine';
 import { syncNow } from '@/lib/sync';
 import { ModeSchema, type ExamConfig, type Session, type SessionMode } from '@/lib/types';
 
@@ -93,6 +93,8 @@ export default function ExamPage() {
   }
 
   const { cfg, bundle } = phase;
+  const optionals = cfg.sections.filter((s) => optional(s) && s.questionCount);
+  const toggle = (id: string) => setPhase({ kind: 'intro', bundle, cfg: { ...cfg, sections: cfg.sections.map((s) => (s.id === id ? { ...s, enabled: !s.enabled } : s)) } });
   const runnable = cfg.sections.filter((s) => s.enabled && s.questionCount);
   const totalQ = runnable.reduce((a, s) => a + (s.questionCount ?? 0), 0);
   const totalMin = runnable.reduce((a, s) => a + (s.durationMinutes ?? 0), 0);
@@ -120,6 +122,19 @@ export default function ExamPage() {
     <Shell title={cfg.name}>
       <div className="space-y-5">
         <section className="card">
+          {optionals.length > 0 && (
+            <fieldset className="mb-4">
+              <legend className="text-sm font-medium">Komponen pilihan</legend>
+              <div className="mt-2 flex flex-wrap gap-x-6 gap-y-2">
+                {optionals.map((s) => (
+                  <label key={s.id} className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" className="h-5 w-5" checked={s.enabled} onChange={() => toggle(s.id)} data-testid={`opt-${s.bank[0]}`} />
+                    {s.title} ({s.questionCount} soalan)
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          )}
           <table className="w-full border-collapse">
             <thead>
               <tr>

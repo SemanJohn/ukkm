@@ -39,9 +39,9 @@ const ukkmSections: ExamSection[] = [
   { id: 'matematik', title: 'Matematik', enabled: true, bank: ['matematik'], questionCount: 30, durationMinutes: 45, difficulty: MIX, scored: true, verificationStatus: P, note: NOTE },
   { id: 'sains', title: 'Sains', enabled: true, bank: ['sains'], questionCount: 30, durationMinutes: 40, difficulty: MIX, scored: true, verificationStatus: P, note: NOTE },
   {
-    id: 'keperibadian', title: 'Keupayaan / Keperibadian', enabled: false, bank: ['keperibadian'], questionCount: 30, durationMinutes: 15,
+    id: 'keperibadian', title: 'Keupayaan / Keperibadian', enabled: false, bank: ['keperibadian'], questionCount: 80, durationMinutes: 30,
     difficulty: { easy: 0, medium: 100, hard: 0, advanced: 0 }, scored: false, verificationStatus: P,
-    note: 'Modul pilihan — dinyahaktifkan secara lalai. Tidak disahkan sebagai komponen UKKM bagi calon KPM selepas PKSK. Tiada skor psikometrik dikeluarkan.',
+    note: 'Modul pilihan (boleh dihidupkan atau dimatikan pada skrin mula). 80 item ialah angka laman pihak ketiga, bukan spesifikasi rasmi; tidak disahkan sebagai komponen UKKM bagi calon KPM selepas PKSK. Tiada skor psikometrik dikeluarkan.',
   },
   {
     id: 'bm', title: 'Bahasa Melayu', enabled: false, bank: ['bm'], questionCount: 20, durationMinutes: 25, difficulty: MIX, scored: true, verificationStatus: P,
